@@ -1,0 +1,60 @@
+
+loc_6A2:                                // CODE XREF: CrackMe.Form1__set_Button1+14j                    ------------------> formulaire avec button1
+   ldarg.0
+   ldarg.1
+   stfld    class [System.Windows.Forms]System.Windows.Forms.Button CrackMe.Form1::_Button1
+   ldarg.0
+   ldfld    class [System.Windows.Forms]System.Windows.Forms.Button CrackMe.Form1::_Button1
+   brfalse.s loc_6BD
+   ldarg.0
+   ldfld    class [System.Windows.Forms]System.Windows.Forms.Button CrackMe.Form1::_Button1
+   ldloc.0
+   callvirt instance void [System.Windows.Forms]System.Windows.Forms.Control::add_Click(class [mscorlib]System.EventHandler)
+
+loc_6BD:                                // CODE XREF: CrackMe.Form1__set_Button1+2Fj
+   ret
+ }
+
+ .method private instance void TextBox1_TextChanged(object sender, class [mscorlib]System.EventArgs e)
+                                       // DATA XREF: CrackMe.Form1__set_TextBox1+2r
+ {
+   .maxstack 8
+   ret
+ }
+
+ .method private instance void Button1_Click(object sender, class [mscorlib]System.EventArgs e)                      ------------> quand button1 est clique on check si le mdp est le bon
+                                       // DATA XREF: CrackMe.Form1__set_Button1+2r
+ {
+   .maxstack 8
+   ldarg.0
+   callvirt instance class [System.Windows.Forms]System.Windows.Forms.TextBox CrackMe.Form1::get_TextBox1()
+   callvirt instance string [System.Windows.Forms]System.Windows.Forms.TextBox::get_Text()
+   ldstr    aDotnetop                  // "DotNetOP"                                                              -------------> MDP : DotNetOP
+   ldc.i4.0
+   call     int32 [Microsoft.VisualBasic]Microsoft.VisualBasic.CompilerServices.Operators::CompareString(string, string, bool)  --------------> compare avec le mdp
+   ldc.i4.0
+   bne.un.s loc_6F8
+   ldstr    aBravoVousPouve            // "Bravo! Vous pouvez valider avec ce mot "...                                  ------------> le mdp est bon
+   ldc.i4.0
+   ldnull
+   call     valuetype [Microsoft.VisualBasic]Microsoft.VisualBasic.MsgBoxResult [Microsoft.VisualBasic]Microsoft.VisualBasic.Interaction::MsgBox(object, valuetype [Microsoft.VisualBasic]Microsoft.VisualBasic.MsgBoxStyle, object)
+   pop
+   br.s     loc_705
+
+loc_6F8:                                // CODE XREF: CrackMe.Form1__Button1_Click+17j
+   ldstr    aMauvaisMotDePa            // "Mauvais mot de passe\r\nBad password"                                          -----------> le mdp est pas bon
+   ldc.i4.0
+   ldnull
+   call     valuetype [Microsoft.VisualBasic]Microsoft.VisualBasic.MsgBoxResult [Microsoft.VisualBasic]Microsoft.VisualBasic.Interaction::MsgBox(object, valuetype [Microsoft.VisualBasic]Microsoft.VisualBasic.MsgBoxStyle, object)
+   pop
+
+loc_705:                                // CODE XREF: CrackMe.Form1__Button1_Click+26j
+   ret
+ }
+}
+}
+
+[3:48] 
+
+
+MDP : DotNetOP
