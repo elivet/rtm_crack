@@ -1,0 +1,70 @@
+.text:00401726 ; =============== S U B R O U T I N E =======================================
+.text:00401726
+.text:00401726 ; Attributes: bp-based frame
+.text:00401726
+.text:00401726 sub_401726      proc near               ; CODE XREF: sub_4017B8+35p
+.text:00401726
+.text:00401726 Format          = dword ptr -28h
+.text:00401726 var_C           = dword ptr -0Ch
+.text:00401726 arg_0           = dword ptr  8
+.text:00401726 arg_4           = dword ptr  0Ch
+.text:00401726
+.text:00401726                 push    ebp
+.text:00401727                 mov     ebp, esp
+.text:00401729                 sub     esp, 28h
+.text:0040172C                 mov     [ebp+var_C], 0
+.text:00401733                 cmp     [ebp+arg_4], 7
+.text:00401737                 jnz     short loc_4017AA
+.text:00401739                 mov     eax, [ebp+arg_0]
+.text:0040173C                 movzx   eax, byte ptr [eax]
+.text:0040173F                 cmp     al, 53h									----------> compare la premiere lettre : 53h --> S
+.text:00401741                 jnz     short loc_4017AA							----------> si ce n'est pas la meme lettre , jump vers wrong psswd (loc_4017AA)
+.text:00401743                 mov     eax, [ebp+arg_0]
+.text:00401746                 add     eax, 1
+.text:00401749                 movzx   eax, byte ptr [eax]
+.text:0040174C                 cmp     al, 50h									----------> compare la seconde lettre : 50h --> P
+.text:0040174E                 jnz     short loc_4017AA
+.text:00401750                 mov     eax, [ebp+arg_0]
+.text:00401753                 add     eax, 2
+.text:00401756                 movzx   eax, byte ptr [eax]
+.text:00401759                 cmp     al, 61h									----------> compare la troisieme lettre : 61h --> a
+.text:0040175B                 jnz     short loc_4017AA
+.text:0040175D                 mov     eax, [ebp+arg_0]
+.text:00401760                 add     eax, 3
+.text:00401763                 movzx   eax, byte ptr [eax]
+.text:00401766                 cmp     al, 43h									----------> compare la quatrieme lettre : 43h --> C
+.text:00401768                 jnz     short loc_4017AA
+.text:0040176A                 mov     eax, [ebp+arg_0]
+.text:0040176D                 add     eax, 4
+.text:00401770                 movzx   eax, byte ptr [eax]
+.text:00401773                 cmp     al, 49h									----------> compare la cinquieme lettre : 49h --> I
+.text:00401775                 jnz     short loc_4017AA
+.text:00401777                 mov     eax, [ebp+arg_0]
+.text:0040177A                 add     eax, 5
+.text:0040177D                 movzx   eax, byte ptr [eax]
+.text:00401780                 cmp     al, 6Fh									----------> compare la sixieme lettre : 6Fh --> o
+.text:00401782                 jnz     short loc_4017AA
+.text:00401784                 mov     eax, [ebp+arg_0]
+.text:00401787                 add     eax, 6
+.text:0040178A                 movzx   eax, byte ptr [eax]
+.text:0040178D                 cmp     al, 53h									----------> compare la derniere lettre : 53h --> S
+.text:0040178F                 jnz     short loc_4017AA
+.text:00401791                 mov     eax, offset aGratzMan ; "Gratz man :)" 	------> correspond au mdp
+.text:00401796                 mov     [esp+28h+Format], eax ; Format
+.text:00401799                 call    printf
+.text:0040179E                 mov     [esp+28h+Format], 0 ; Code
+.text:004017A5                 call    exit
+.text:004017AA ; ---------------------------------------------------------------------------
+.text:004017AA
+.text:004017AA loc_4017AA:                             ; CODE XREF: sub_401726+11j
+.text:004017AA                                         ; sub_401726+1Bj ...
+.text:004017AA                 mov     [esp+28h+Format], offset Str ; "Wrong password"
+.text:004017B1                 call    puts
+.text:004017B6                 leave
+.text:004017B7                 retn
+.text:004017B7 sub_401726      endp
+.text:004017B7
+
+
+
+mdp : SPaCIoS
