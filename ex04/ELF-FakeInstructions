@@ -1,0 +1,21 @@
+elivet@ubuntu:~/Desktop$ ltrace ./crackme ergergerg
+__libc_start_main(0x8048554, 2, 0xffe40d04, 0x8048840 <unfinished ...>
+malloc(29)                                       = 0x8703008
+memcpy(0x8703008, "_0cGj35m9V5T3\303\2078CJ0\303\2009H95h3xdh\0", 31) = 0x8703008
+memcpy(0xffe40bca, "_Celebration\0", 13)         = 0xffe40bca
+strcpy(0xffe40c2e, "ergergerg")                  = 0xffe40c2e
+puts("V\303\251rification de votre mot de pa"...Vérification de votre mot de passe..
+) = 38
+strcmp("ergergerg", "_0cGjc5m_.5\r\n\303\2078CJ0\303\2009") = 1 						-----------> compare avec le mdp : "_0cGjc5m_.5\r\n\303\2078CJ0\303\2009"
+printf("le voie de la sagesse te guidera"...le voie de la sagesse te guidera, tache de trouver le mot de passe petit padawaan 
+)    = 84
+exit(0  <no return ...>
++++ exited (status 0) +++
+
+
+elivet@ubuntu:~/Desktop$ ./crackme "`python -c 'print("_0cGjc5m_.5\r\n\303\2078CJ0\303\2009")'`" --------> on lui passe donc en argument : "_0cGjc5m_.5\r\n\303\2078CJ0\303\2009"
+Vérification de votre mot de passe..
+'+) Authentification réussie...
+ U'r root! 
+
+ sh 3.0 # password: liberté!
