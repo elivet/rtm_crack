@@ -1,0 +1,92 @@
+0x08048486 <+150>:	call   0x8048f90 <fgets>             ------> prend le mdp en entree standard
+0x0804848b <+155>:	add    $0x10,%esp
+0x0804848e <+158>:	lea    0x8048497,%eax
+0x08048494 <+164>:	inc    %eax
+0x08048495 <+165>:	jmp    *%eax
+0x08048497 <+167>:	mov    $0x8bea558a,%eax
+0x0804849c <+172>:	inc    %ebp
+0x0804849d <+173>:	hlt    
+0x0804849e <+174>:	add    $0x4,%eax
+0x080484a1 <+177>:	mov    (%eax),%al
+0x080484a3 <+179>:	cmp    %al,%dl                      -------> compare premiere lettre al : vrai mdp & dl : mdp rentre par lutilisateur 
+0x080484a5 <+181>:	jne    0x80484e4 <main+244>
+0x080484a7 <+183>:	mov    -0x15(%ebp),%dl
+0x080484aa <+186>:	mov    -0xc(%ebp),%eax
+0x080484ad <+189>:	add    $0x5,%eax
+0x080484b0 <+192>:	mov    (%eax),%al
+0x080484b2 <+194>:	cmp    %al,%dl                     -------> compare la deuxieme lettre
+0x080484b4 <+196>:	jne    0x80484e4 <main+244>
+0x080484b6 <+198>:	mov    -0x14(%ebp),%dl
+0x080484b9 <+201>:	mov    -0xc(%ebp),%eax
+0x080484bc <+204>:	inc    %eax
+0x080484bd <+205>:	mov    (%eax),%al
+0x080484bf <+207>:	cmp    %al,%dl                     -------> compare la troisieme lettre
+0x080484c1 <+209>:	jne    0x80484e4 <main+244>
+0x080484c3 <+211>:	mov    -0x13(%ebp),%dl
+0x080484c6 <+214>:	mov    -0xc(%ebp),%eax
+0x080484c9 <+217>:	add    $0xa,%eax
+0x080484cc <+220>:	mov    (%eax),%al
+0x080484ce <+222>:	cmp    %al,%dl                     -------> compare la quatrieme lettre
+0x080484d0 <+224>:	jne    0x80484e4 <main+244>
+0x080484d2 <+226>:	sub    $0xc,%esp
+0x080484d5 <+229>:	push   $0x80c297a
+0x080484da <+234>:	call   0x80492d0 <puts>
+0x080484df <+239>:	add    $0x10,%esp
+0x080484e2 <+242>:	jmp    0x80484f4 <main+260>
+0x080484e4 <+244>:	sub    $0xc,%esp
+0x080484e7 <+247>:	push   $0x80c298e
+0x080484ec <+252>:	call   0x80492d0 <puts>
+0x080484f1 <+257>:	add    $0x10,%esp
+0x080484f4 <+260>:	mov    $0x0,%eax
+0x080484f9 <+265>:	mov    -0x4(%ebp),%ecx
+0x080484fc <+268>:	leave  
+0x080484fd <+269>:	lea    -0x4(%ecx),%esp
+0x08048500 <+272>:	ret    
+
+
+
+----> le mdp a donc quatre lettres
+----> pour debugger avec gdb en evitant le ptrace :
+
+0x08048410 <+32>: call   0x8058a70 <ptrace>
+0x08048415 <+37>: add    $0x10,%esp
+0x08048418 <+40>: test   %eax,%eax
+
+on break apres le ptrace :
+
+gdb$ b *0x08048418
+Breakpoint 1 at 0x8048418
+
+et on change le retour de la fonction pour quil ne detecte pas le debugger :
+
+set $eax=0
+
+----> on debug pour voir les lettres du vrai mdp contenues dans al :
+
+gdb$ b *0x080484a3
+Breakpoint 2 at 0x80484a3
+gdb$ b *0x080484b2
+Breakpoint 3 at 0x80484b2
+gdb$ b *0x080484bf
+Breakpoint 4 at 0x80484bf
+gdb$ b *0x080484ce
+Breakpoint 5 at 0x80484ce
+
+gdb$ print $al
+$1 = 0x65
+--> e
+
+gdb$ print $al
+$2 = 0x61
+--> a
+
+gdb$ print $al
+$3 = 0x73
+--> s
+
+gdb$ print $al
+$4 = 0x79
+--> y
+
+
+MDP = easy
