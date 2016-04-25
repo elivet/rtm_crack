@@ -1,0 +1,155 @@
+ 8048080:	b8 04 00 00 00       	mov    $0x4,%eax
+ 8048085:	bb 01 00 00 00       	mov    $0x1,%ebx
+ 804808a:	b9 a1 91 04 08       	mov    $0x80491a1,%ecx 			-----> 0x80491a1 : "Welcome to rootme challenge"
+ 804808f:	ba 26 00 00 00       	mov    $0x26,%edx
+ 8048094:	cd 80                	int    $0x80 					-----> "PASS: "
+
+ 8048096:	b8 03 00 00 00       	mov    $0x3,%eax
+ 804809b:	31 db                	xor    %ebx,%ebx
+ 804809d:	b9 88 91 04 08       	mov    $0x8049188,%ecx
+ 80480a2:	ba 33 00 00 00       	mov    $0x33,%edx
+ 80480a7:	cd 80                	int    $0x80 					----> Attend entree standard
+
+ 80480a9:	31 c9                	xor    %ecx,%ecx 				----> Prepare l'appel
+ 80480ab:	b8 80 80 04 08       	mov    $0x8048080,%eax
+ 80480b0:	bb 23 81 04 08       	mov    $0x8048123,%ebx
+ 80480b5:	e8 5b 00 00 00       	call   0x8048115 				---->  |||
+
+ 80480ba:	89 ca                	mov    %ecx,%edx				----> key dans ECX save dans EDX
+ 80480bc:	b9 19 00 00 00       	mov    $0x19,%ecx
+ ## compare les deux mdp
+ 80480c1:	b8 55 91 04 08       	mov    $0x8049155,%eax 			----->  stocker le key
+ 80480c6:	bb 88 91 04 08       	mov    $0x8049188,%ebx
+ 80480cb:	d1 ca                	ror    %edx 					-----> modifie EDX
+ 80480cd:	8a 44 08 ff          	mov    -0x1(%eax,%ecx,1),%al
+ 80480d1:	8a 5c 0b ff          	mov    -0x1(%ebx,%ecx,1),%bl
+ 80480d5:	30 d8                	xor    %bl,%al
+ 80480d7:	30 d0                	xor    %dl,%al
+ 80480d9:	75 1b                	jne    0x80480f6				----> si different : wrong mdp
+## tant que ECX != 0 ??
+ 80480db:	49                   	dec    %ecx
+ 80480dc:	75 e3                	jne    0x80480c1
+## good password
+ 80480de:	b8 04 00 00 00       	mov    $0x4,%eax
+ 80480e3:	bb 01 00 00 00       	mov    $0x1,%ebx
+ 80480e8:	b9 24 91 04 08       	mov    $0x8049124,%ecx
+ 80480ed:	ba 26 00 00 00       	mov    $0x26,%edx
+ 80480f2:	cd 80                	int    $0x80
+ 80480f4:	eb 16                	jmp    0x804810c
+## wrong password
+ 80480f6:	b8 04 00 00 00       	mov    $0x4,%eax
+ 80480fb:	bb 01 00 00 00       	mov    $0x1,%ebx
+ 8048100:	b9 4a 91 04 08       	mov    $0x804914a,%ecx
+ 8048105:	ba 0b 00 00 00       	mov    $0xb,%edx
+ 804810a:	cd 80                	int    $0x80
+ ## exit programm
+ 804810c:	b8 01 00 00 00       	mov    $0x1,%eax
+ 8048111:	31 db                	xor    %ebx,%ebx
+ 8048113:	cd 80                	int    $0x80
+
+ 8048115:	29 c3                	sub    %eax,%ebx 				-----> EBX commence a 0x000000A3 / EAX commence a 0x08048080 / ECX commence a 0x00000000
+ 8048117:	31 c9                	xor    %ecx,%ecx 				-----> ?
+ ## boucle tant que EBX != 0
+ 8048119:	02 08                	add    (%eax),%cl 				-----> modifie ECX (a partir de EAX)
+ 804811b:	c1 c1 03             	rol    $0x3,%ecx 				-----> modifie ECX
+ 804811e:	40                   	inc    %eax 					----> incremente EAX
+ 804811f:	4b                   	dec    %ebx 					----> decremente EBX
+ 8048120:	75 f7                	jne    0x8048119
+ 8048122:	c3                   	ret 
+
+hb *80480bc
+EDX
+ 0xAC77E166
+
+
+python -c 'print("\xe0"*25)' > file
+
+Keybyte :
+gdb$ x/25xb 0x8049155
+0x8049155:	0x1e	0xcd	0x2a	0xd5	0x34	0x87	0xfc	0x78
+0x804915d:	0x64	0x35	0x9d	0xec	0xde	0x15	0xac	0x97
+0x8049165:	0x99	0xaf	0x96	0xda	0x79	0x26	0x4f	0x32
+0x804916d:	0xe0
+ 
+hb *80480d7
+jump *80480cb
+ checksum: (selectionner que les dernieres bytes B3 ,59)
+ 0x563BF0B3
+ 0xAB1DF859
+ 0xD58EFC2C
+ 0x6AC77E16
+ 0x3563BF0B
+ 0x9AB1DF85
+ 0xCD58EFC2
+ 0x66AC77E1
+ 0xB3563BF0
+ 0x59AB1DF8
+ 0x2CD58EFC
+ 0x166AC77E
+ 0x0B3563BF
+ 0x859AB1DF
+ 0xC2CD58EF
+ 0xE166AC77
+ 0xF0B3563B
+ 0xF859AB1D
+ 0xFC2CD58E
+ 0x7E166AC7
+ 0xBF0B3563
+ 0xDF859AB1
+ 0xEFC2CD58
+ 0x77E166AC
+ 0x3BF0B356
+
+mdp = checksum ^ keybyte :
+ 0xB3 ^ 0xe0
+ 0x59 ^ 0x32
+ 0x2C ^ 0x4f
+ 0x16 ^ 0x26
+ 0x0B ^ 0x79
+ 0x85 ^ 0xda
+ 0xC2 ^ 0x96
+ 0xE1 ^ 0xaf
+ 0xF0 ^ 0x99
+ 0xF8 ^ 0x97
+ 0xFC ^ 0xac
+ 0x7E ^ 0x15
+ 0xBF ^ 0xde
+ 0xDF ^ 0xec
+ 0xEF ^ 0x9d
+ 0x77 ^ 0x35
+ 0x3B ^ 0x64
+ 0x1D ^ 0x78
+ 0x8E ^ 0xfc
+ 0xC7 ^ 0x87
+ 0x63 ^ 0x34
+ 0xB1 ^ 0xd5
+ 0x58 ^ 0x2a
+ 0xAC ^ 0xcd
+ 0x56 ^ 0x1e
+
+ script python :
+ #!usr/bin/python
+
+if __name__ == '__main__':
+        KEYBYTE = [0x1e,0xcd,0x2a,0xd5,0x34,0x87,0xfc,0x78,      
+                0x64,0x35,0x9d,0xec,0xde,0x15,0xac,0x97,  
+                0x99,0xaf,0x96,0xda,0x79,0x26,0x4f,0x32,  
+                0xe0]
+        CHECKSUM =  [0xB3,0x59,0x2C,0x16,0x0B,0x85,0xC2,0xE1,0xF0,0xF8,0xFC,0x7E,0xBF,0xDF,0xEF,0x77,0x3B,0x1D,0x8E,0xC7,0x63,0xB1,0x58,0xAC,0x56]
+
+        I = 24
+        ANSWER = ["A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A","A"]
+        for X in CHECKSUM:
+        	ANSWER[I] = X ^ KEYBYTE[I]
+        	I -= 1
+
+        print(ANSWER)
+
+e3r5p7% python ELF-Pasdepointsdarretlogiciels
+[72, 97, 114, 100, 87, 64, 114, 101, 95, 66, 114, 51, 97, 107, 80, 111, 105, 78, 84, 95, 114, 48, 99, 107, 83]
+
+traduits en ascii :
+H, a, r, d, W, @, r, e, _, B, r, 3, a, k, P, o, i, N, T, _, r, 0, c, k, S
+
+le mdp est donc :
+HardW@re_Br3akPoiNT_r0ckS
