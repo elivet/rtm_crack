@@ -1,0 +1,47 @@
+qemu-arm -g 1233 ./chall9.bin "TTTTTTTTTTT"
+
+gdb-multiarch -q -nx
+file chall9.bin
+layout regs
+layout asm
+target remote :1233
+b *0x8400
+c
+
+le programme compare r1 avec r3
+r3 etant le mdp et r1 etant la chaine entree par lutilisateur
+r3			0x41	--> A
+pour ne pas quitter le programme on : set $r1=0x41
+le programme va alors continuer la comparaison, pensant que le premiere lettre est bonne
+r3			0x42	--> B
+r3			0x43	--> C
+r3			0x44	--> D
+r3			0x45	--> E
+r3			0x46	--> F
+r3			0x47	--> G
+r3			0x48	--> H
+r3			0x49	--> I
+r3			0x4a	--> J
+r3			0x4b	--> K
+r3			0x4c	--> L
+r3			0x4d	--> M
+r3			0x4e	--> N
+r3			0x4f	--> O
+r3			0x50	--> P
+r3			0x51	--> Q
+r3			0x52	--> R
+r3			0x53	--> S
+r3			0x54	--> T
+r3			0x55	--> U
+r3			0x56	--> V
+r3			0x57	--> W
+r3			0x58	--> X
+r3			0x59	--> Y
+r3			0x5a	--> Z
+r3			0x5b	--> [
+r3			0x5c	--> \
+r3			0x5d	--> ]
+r3			0x5e	--> ^
+r3			0x5f	--> _
+
+ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_
