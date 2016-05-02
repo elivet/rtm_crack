@@ -1,0 +1,54 @@
+crackme_wtf est un ar
+Il faut donc extraire le fichier qu'il contient
+
+mkdir object
+
+cp crackme_wtf object/
+
+cd object
+
+ar x crackme_wtf
+
+--> on obtient donc un executable crackme
+
+On va remplace le strcmp par notre propre strcmp
+
+Voici la fonction:
+
+#include <stdio.h>
+
+int		strcmp(const char *str1, const char *str2)
+{
+	printf("(%s)", str1);
+	printf("[%s]", str2);
+	return 0;
+}
+
+On cree notre librairie
+gcc -m32 -shared -fPIC file.c -o file.so
+
+On load notre library
+export LD_PRELOAD=/home/elivet/Desktop/file.so
+
+On execute le programme qui va appeler notre fonction strcmp qui affichera notre mdp
+
+elivet@ubuntu:~/Desktop/object$ ./Crackme 
+
+    ** Bienvenue dans ce challenge de cracking **    
+
+[+] Password :tata
+
+[!]Access Denied !  
+[-] Try again 
+
+(tata)[109766442_VQLGE_TQPTYD_KJTIV_]elivet@ubuntu:~/Desktop/object$ ./Crackme 
+
+    ** Bienvenue dans ce challenge de cracking **    
+
+[+] Password :109766442_VQLGE_TQPTYD_KJTIV_
+
+[+]Good password  
+[+] Clee de validation du crack-me : _VQLG(109766442_VQLGE_TQPTYD_KJTIV_)[200967752_VQLGE_TQPTYD_KJTIV_]1160_VTEPI_AVTG_3093_
+
+On extrait notre printf (entre les () et les []) et on obtient le mdp :
+_VQLG1160_VTEPI_AVTG_3093_
