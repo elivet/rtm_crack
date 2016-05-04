@@ -1,0 +1,87 @@
+On extait le js du pdf (avec origami-pdf)
+
+e3r5p7% git clone https://github.com/mobmewireless/origami-pdf.git
+Cloning into 'origami-pdf'...
+remote: Counting objects: 3596, done.
+remote: Total 3596 (delta 0), reused 0 (delta 0), pack-reused 3596
+Receiving objects: 100% (3596/3596), 16.71 MiB | 5.13 MiB/s, done.
+Resolving deltas: 100% (259/259), done.
+Checking connectivity... done.
+e3r5p7% ./origami-pdf/bin/pdfextract ch7.pdf
+Extracted 70 PDF streams to 'ch7.dump/streams'.
+Extracted 2 scripts to 'ch7.dump/scripts'.
+Extracted 0 attachments to 'ch7.dump/attachments'.
+Extracted 0 fonts to 'ch7.dump/fonts'.
+Extracted 0 images to 'ch7.dump/images'.
+e3r5p7% cd ch7.dump
+e3r5p7% ls
+attachments	fonts		images		scripts		streams
+e3r5p7% cd scripts
+e3r5p7% ls
+script_-3289884619370375257.js	script_450009731231560947.js
+
+on rassemble les deux scripts sous un meme script :
+
+e3r5p7% cat *.js > toto.js
+
+on l'execute dans chrome :
+erreur sur info a la ligne 18
+var okzFfjcYQp=info;
+---> var okzFfjcYQp=this.info;
+
+erreur sur author a la lgien 19
+var YcQpjo=ozFjcYQp.okzFfjcYQp.author;
+On cherche les data du pdf pour les renseigner en dur dans le script
+e3r5p7% ./origami-pdf/bin/pdfmetadata ch7.pdf
+[*] Document information dictionary:
+Producer            : MiKTeX pdfTeX-1.40.12
+Subject             : I5xlmqMpKN14VZNWuCulWR2fy4X6jS3j
+Keywords            : 47ljm6agvj2xYyKVnEVwBfin2KQvzzto
+CreationDate        : BjcEwttYWwOcPn1bZPwXPqbt1jUq6X4e
+Creator             : TeX
+Author              : dVbFZxLu7en8hJhhFfCTIOer76hBPONC
+Title               : xj5oWJOch2E0ir5BI05QuClyYTLnHBmz
+Trapped             : False
+ModDate             : D:20110901121355+02'00'
+PTEX.Fullbanner     : This is MiKTeX-pdfTeX 2.9.4225 (1.40.12)
+
+---> 
+var info =
+{
+  author: "dVbFZxLu7en8hJhhFfCTIOer76hBPONC",
+  title: "xj5oWJOch2E0ir5BI05QuClyYTLnHBmz",
+  subject: "I5xlmqMpKN14VZNWuCulWR2fy4X6jS3j"
+};
+
+On renseigne egalement app appele a la ligne 58 et 62
+la fonction va nous permettre d'afficher des valeurs pouvant contenir le mdp
+Dans mon cas j'ai remarque que la var a0O7ZyO etait celle qui etait la plus modifiee dans le programme, j'ai donc voulu voir ce quelle contenait
+var app = {
+  response: function(str) { console.log(a0O7ZyO); }
+};
+
+Je veux egalement overload la fonction eval appelee tres souvent dans le programme afin d'afficher la string passee en parametre
+
+_eval = eval;
+eval = function(str) {
+  console.log(str);
+  _eval(str);
+};
+
+lorsque jexecute le script, jobtiens une suite incomprehensible, au milieu de laquelle est affiche en rouge un tableau :
+["v", "a", "r", " ", "k", "e", "y", "=", "'", "t", "X", "y", "'", "+", "c", "Y", "Q", "p", "j", "o", "+", "'", "Y", "a", "K", "'", ";", "v", "a", "r", " ", "a", "n", "s", "w", "o", "r", " ", "=", " ", "a", "p", "p", ".", "r", "e", "s", "p", "o", "n", "s", "e", "(", "'", "E", "n", "t", "e", "r", " ", "t", "h", "e", " ", "k", "e", "y", " ", "f", "o", "r", " ", "v", "a", "l", "i", "d", "a", "t", "i", "o", "n", "'", ",", "'", "H", "a", "c", "k", ".", "L", "U", " ", "P", "D", "F", " ", "C", "h", "a"…][0 … 99][100 … 199][200 … 209]length: 210__proto__: Array[0] 
+
+il y a semble-t-il une var nommee key
+je vais donc essayer de lafficher en modifiant la fonction app :
+var app = {
+  response: function(str) { console.log(a0O7ZyO); console.log(key); }
+};
+
+je relance le script et a l'emplacement du tableau aux lettres rouge, une key est bien affichee :
+var key='tXy'+cYQpjo+'YaK';var answor = app.response('Enter the key for validation','Hack.LU PDF Challenge','');if(answor==key){app.alert('you have got it. the key is: '+key);}else{app.alert('nope try again');}
+VM209727:142 ["v", "a", "r", " ", "k", "e", "y", "=", "'", "t", "X", "y", "'", "+", "c", "Y", "Q", "p", "j", "o", "+", "'", "Y", "a", "K", "'", ";", "v", "a", "r", " ", "a", "n", "s", "w", "o", "r", " ", "=", " ", "a", "p", "p", ".", "r", "e", "s", "p", "o", "n", "s", "e", "(", "'", "E", "n", "t", "e", "r", " ", "t", "h", "e", " ", "k", "e", "y", " ", "f", "o", "r", " ", "v", "a", "l", "i", "d", "a", "t", "i", "o", "n", "'", ",", "'", "H", "a", "c", "k", ".", "L", "U", " ", "P", "D", "F", " ", "C", "h", "a"…][0 … 99][100 … 199][200 … 209]length: 210__proto__: Array[0]
+VM209727:142 tXyxj5oWJOch2E0ir5BI05QuClyYTLnHBmzYaK
+
+
+il s'agit du mdp :
+tXyxj5oWJOch2E0ir5BI05QuClyYTLnHBmzYaK
